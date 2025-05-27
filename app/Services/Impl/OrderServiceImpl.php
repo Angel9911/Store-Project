@@ -21,13 +21,13 @@ class OrderServiceImpl implements OrderService
         return $this->orderRepository->createOrder($orderData, $products);
     }
 
-    public function getOrdersByUser(int $userId): array
+    public function getOrdersByUser(int $userId): \Illuminate\Database\Eloquent\Collection|\LaravelIdea\Helper\App\Models\_IH_Order_C|array
     {
-        // TODO: Implement getOrdersByUser() method.
+        return $this->orderRepository->getOrdersByUserId($userId);
     }
 
-    public function getOrderDetailsByUser(int $userId, int $orderId): array
+    public function getOrderDetailsByUser(int $userId, int $orderId): Order
     {
-        // TODO: Implement getOrderDetailsByUser() method.
+        return $this->orderRepository->getOrderDetailsByUserId($userId, $orderId);
     }
 }

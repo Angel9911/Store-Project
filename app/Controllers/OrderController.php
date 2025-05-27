@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class OrderController extends Controller
 {
@@ -24,6 +26,11 @@ class OrderController extends Controller
     }
 
     // Step 2: Submit order
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function createOrder(Request $request): \Illuminate\Http\RedirectResponse
     {
         $validatedOrderDetails = $request->validate([
@@ -33,7 +40,30 @@ class OrderController extends Controller
             'address' => 'required|string',
         ]);
 
-        $productData = [];// todo;
+        // Retrieve cart from session
+        $cartItems = session()->get('cart', []);
+
+        if (empty($cartItems)) {
+            return redirect()->back()->with('error', 'Your cart is empty.');
+        }
+
+        // Prepare product data and calculate total price
+        $productData = [];
+        $totalPrice = 0;
+
+        foreach ($cartItems as $item) {
+            $productData[] = [
+                'id' => $item['product_id'],
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+            ];
+            $totalPrice += $item['price'] * $item['quantity'];
+        }
+
+        // Add totalPrice to the validated order details
+        $validatedOrderDetails['totalPrice'] = $totalPrice;
+
+        $validatedOrderDetails['user_id'] = Auth::id();
 
         $order = $this->orderService->createOrder($validatedOrderDetails,$productData);
 
@@ -67,19 +97,15 @@ class OrderController extends Controller
     public function showAllOrders(): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\View\View|\Illuminate\Contracts\Foundation\Application
     {
         $orders = $this->orderService->getOrdersByUser(Auth::id());
+
         return view('orders.orders_show', compact('orders'));
     }
 
     // Optional: View details of a specific order
     public function showOrderDetails($orderId): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\View\View|\Illuminate\Contracts\Foundation\Application
-    {
+    {   
         $order = $this->orderService->getOrderDetailsByUser(Auth::id(), $orderId);
 
-        // Optional auth check
-        if ($order->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-        return view('orders.show', compact('order'));
+        return view('orders.orders_show_details', compact('order'));
     }
 }

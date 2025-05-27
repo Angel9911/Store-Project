@@ -22,7 +22,7 @@
                                class="text-blue-600 hover:underline text-sm">View Details</a>
                         </div>
                         <div class="text-gray-800">
-                            <p><strong>Total:</strong> ${{ number_format($order->total, 2) }}</p>
+                            <p><strong>Total:</strong> ${{ number_format($order->totalPrice, 2) }}</p>
                             <p><strong>Status:</strong> {{ ucfirst($order->status ?? 'completed') }}</p>
                         </div>
                     </div>

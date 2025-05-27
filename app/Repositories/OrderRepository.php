@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Order;
+use Ramsey\Collection\Collection;
 
 class OrderRepository
 {
@@ -21,4 +22,21 @@ class OrderRepository
 
         return $order;
     }
+
+    public function getOrdersByUserId(int $userId): array|\Illuminate\Database\Eloquent\Collection|\LaravelIdea\Helper\App\Models\_IH_Order_C
+    {
+        return Order::with('orderProducts.product') // eager load product details
+        ->where('user_id', $userId)
+            ->orderByDesc('created_at')
+            ->get();
+    }
+
+    public function getOrderDetailsByUserId(int $userId, int $orderId): Order
+    {
+        return Order::with(['orderProducts.product'])
+            ->where('id', $orderId)
+            ->where('user_id', $userId)
+            ->first();
+    }
+
 }

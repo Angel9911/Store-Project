@@ -7,7 +7,7 @@
         <p class="mb-4">Thank you for your purchase. Your order ID is <span class="font-semibold">{{ $orderId }}</span>.</p>
 
         @auth
-            <a href="{{ route('orders.index') }}"
+            <a href="{{ route('orders.orders_show') }}"
                class="inline-block bg-indigo-600 text-white px-5 py-2 rounded hover:bg-indigo-700">
                 View Your Orders
             </a>
