@@ -2,6 +2,7 @@
 
 namespace App\Services\Impl;
 
+use App\Models\Brand;
 use App\Models\Product;
 use App\Repositories\BrandRepository;
 use App\Repositories\ProductRepository;
@@ -56,8 +57,14 @@ class ProductServiceImpl implements ProductService
         return $this->brandRepository->getBrands();
     }
 
+
     public function editProduct(Product $product, array $data)
     {
         return $this->productRepository->update($product, $data);
+    }
+
+    public function createBrand(array $brandData): Brand
+    {
+        return $this->brandRepository->create($brandData);
     }
 }

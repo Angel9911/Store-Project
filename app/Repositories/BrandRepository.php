@@ -11,4 +11,9 @@ class BrandRepository
     {
         return Brand::all();
     }
+
+    public function create(array $data): Brand
+    {
+        return Brand::create($data);
+    }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\AdminController;
 use App\Controllers\CartController;
 use App\Controllers\HomeController;
 use App\Controllers\OrderController;
@@ -64,15 +65,14 @@ Route::prefix('products')->name('products.')->group(function () {
     Route::get('/{id}', [ProductController::class, 'showProductDetails'])->name('details_show');
 });
 
-// Admin routes - protect with 'auth' and maybe 'is_admin' middleware
-Route::prefix('admin/products')->name('admin.products.')->middleware(['auth'])->group(function () {
-    Route::get('/create', [ProductController::class, 'showCreateProductForm'])->name('create.form');
-    Route::post('/create', [ProductController::class, 'createProduct'])->name('create');
-
-    Route::get('/{id}/edit', [ProductController::class, 'showEditProductForm'])->name('edit.form');
-    Route::put('/{id}', [ProductController::class, 'editProductForm'])->name('update');
-
-    Route::delete('/{id}', [ProductController::class, 'deleteProduct'])->name('delete');
+Route::middleware('restrict.admin')->prefix('admin')->group(function () {
+    Route::get('/login', [AdminController::class, 'showLogin'])->name('admin.login');
+    Route::post('/login', [AdminController::class, 'login'])->name('admin.login.submit');
+    Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::post('/categories', [AdminController::class, 'createCategory'])->name('admin.categories.create');
+    Route::post('/brands', [AdminController::class, 'createBrand'])->name('admin.brands.create');
+    Route::get('/categories/list', [AdminController::class, 'getCategoryList'])->name('admin.categories.list');
+    Route::get('/brands/list', [AdminController::class, 'getBrandList'])->name('admin.brands.list');
 });
 
 // Authentication

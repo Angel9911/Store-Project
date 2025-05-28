@@ -5,6 +5,7 @@
     <title>Online Store</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/js/app.js'])  {{-- for Vite --}}
 </head>
 <body class="bg-gray-100 text-gray-900">
 

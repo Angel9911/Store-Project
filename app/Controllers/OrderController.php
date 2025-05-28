@@ -103,7 +103,7 @@ class OrderController extends Controller
 
     // Optional: View details of a specific order
     public function showOrderDetails($orderId): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\View\View|\Illuminate\Contracts\Foundation\Application
-    {   
+    {
         $order = $this->orderService->getOrderDetailsByUser(Auth::id(), $orderId);
 
         return view('orders.orders_show_details', compact('order'));

@@ -50,15 +50,6 @@ class ProductController extends Controller
         return view('products.details_show', compact('product'));
     }
 
-    // Admin: Show form to create product
-    public function showCreateProductForm(): Factory|Application|View|\Illuminate\View\View|\Illuminate\Contracts\Foundation\Application
-    {
-        $categories = $this->categoryService->getCategories();
-        $brands = $this->productService->getBrands();
-
-        return view('products.create', compact('categories', 'brands'));
-    }
-
     // Admin: Store new product
     public function createProduct(Request $request): RedirectResponse
     {
@@ -75,33 +66,6 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
-    // Admin: Edit product form
-    public function showEditProductForm($id)
-    {
-        $product = $this->productService->getProduct($id);
-        $categories = $this->categoryService->getCategories();
-        $brands = $this->productService->getBrands();
-
-        return view('products.edit', compact('product', 'categories', 'brands'));
-    }
-
-    // Admin: Update product
-    public function editProductForm(Request $request, $id): RedirectResponse
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
-            'brand_id' => 'nullable|exists:brands,id',
-        ]);
-
-        $editedProduct = $this->productService->getProduct($id);
-
-        $this->productService->editProduct($editedProduct, $validated);
-
-        return redirect()->route('products.index')->with('success', 'Product updated.');
-    }
 
     // Admin: Delete product
     public function deleteProduct($id): \Illuminate\Http\RedirectResponse
